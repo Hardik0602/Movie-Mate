@@ -6,7 +6,6 @@ import Home from './src/screens/Home'
 const Stack = createNativeStackNavigator();
 function App() {
   return (
-    
       <SafeAreaProvider>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false, animation: 'fade_from_bottom' }}>
