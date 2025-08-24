@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Home from './src/screens/Home'
 import Movie from './src/screens/Movie'
 import Person from './src/screens/Person'
+import Search from './src/screens/Search'
 const Stack = createNativeStackNavigator();
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Movie" component={Movie} />
             <Stack.Screen name="Person" component={Person} />
+            <Stack.Screen name="Search" component={Search} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>

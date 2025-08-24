@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Cast from '../components/Cast';
 import List from '../components/List';
+import Loading from '../components/Loading';
 const { width, height } = Dimensions.get("window");
 export default function Movie({ item }) {
   const navigation = useNavigation()
@@ -17,6 +18,7 @@ export default function Movie({ item }) {
   let movieName = 'The Batman'
   const [cast, setCast] = useState([1, 2, 3, 4, 5])
   const [similar, setSimilar] = useState([1, 2, 3, 4, 5, 6])
+  const [loading, setLoading] = useState(false)
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 20 }}
@@ -37,50 +39,60 @@ export default function Movie({ item }) {
             <HeartIcon size={35} strokeWidth={2.5} color={favorite ? '#eab308' : 'white'} />
           </TouchableOpacity>
         </View>
-        <View>
-          <Image
-            source={TheBatman}
-            style={{
-              height: height * 0.65,
-              width: width
-            }}
-            resizeMode='cover' />
-          <LinearGradient
-            colors={['transparent', 'rgba(23,23,23,0.8)', 'rgba(23,23,23,1)']}
-            style={{
-              width: width,
-              height: height * 0.4,
-              position: 'absolute',
-              bottom: 0
-            }}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }} />
-        </View>
+        {
+          loading
+            ? <Loading />
+            : <View>
+              <Image
+                source={TheBatman}
+                style={{
+                  height: height * 0.65,
+                  width: width
+                }}
+                resizeMode='cover' />
+              <LinearGradient
+                colors={['transparent', 'rgba(23,23,23,0.8)', 'rgba(23,23,23,1)']}
+                style={{
+                  width: width,
+                  height: height * 0.4,
+                  position: 'absolute',
+                  bottom: 0
+                }}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }} />
+            </View>
+        }
       </View>
-      <View
-        style={{ marginTop: -height * 0.1 }}
-        className='space-y-3'>
-        <Text className='text-white text-center text-3xl font-bold'>{movieName}</Text>
-        <Text className='text-neutral-400 font-semibold text-center text-base'>2022 • PG-15 • 2h 56m</Text>
-        <View className='flex-row justify-center mx-4 space-x-2'>
-          <Text className='text-neutral-400 font-semibold text-base text-center'>Action</Text>
-          <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
-          <Text className='text-neutral-400 font-semibold text-base text-center'>Crime</Text>
-          <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
-          <Text className='text-neutral-400 font-semibold text-base text-center'>Drama</Text>
-          <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
-          <Text className='text-neutral-400 font-semibold text-base text-center'>Thriller</Text>
-          <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
-          <Text className='text-neutral-400 font-semibold text-base text-center'>Mystery</Text>
-        </View>
-        <Text className='text-neutral-400 mx-4 text-center text-base font-semibold'>
-          When a sadistic serial killer begins murdering key political figures in Gotham,
-          the Batman is forced to investigate the city's hidden corruption and question his
-          family's involvement.
-        </Text>
-      </View>
-      <Cast cast={cast} />
-      <List title={'Similar Movies'} data={similar} />
+      {
+        loading
+          ? null
+          : <>
+            <View
+              style={{ marginTop: -height * 0.1 }}
+              className='space-y-3'>
+              <Text className='text-white text-center text-3xl font-bold'>{movieName}</Text>
+              <Text className='text-neutral-400 font-semibold text-center text-base'>2022 • PG-15 • 2h 56m</Text>
+              <View className='flex-row justify-center mx-4 space-x-2'>
+                <Text className='text-neutral-400 font-semibold text-base text-center'>Action</Text>
+                <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
+                <Text className='text-neutral-400 font-semibold text-base text-center'>Crime</Text>
+                <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
+                <Text className='text-neutral-400 font-semibold text-base text-center'>Drama</Text>
+                <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
+                <Text className='text-neutral-400 font-semibold text-base text-center'>Thriller</Text>
+                <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
+                <Text className='text-neutral-400 font-semibold text-base text-center'>Mystery</Text>
+              </View>
+              <Text className='text-neutral-400 mx-4 text-center text-base font-semibold'>
+                When a sadistic serial killer begins murdering key political figures in Gotham,
+                the Batman is forced to investigate the city's hidden corruption and question his
+                family's involvement.
+              </Text>
+            </View>
+            <Cast cast={cast} />
+            <List title={'Similar Movies'} data={similar} />
+          </>
+      }
     </ScrollView>
   )
 }
