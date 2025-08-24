@@ -1,1 +1,3 @@
 MovieMate – Your Personal Movie Information Companion
+
+used patch-package, postinstall-postinstall, deprecated-react-native-prop-types to fix snap carousel
