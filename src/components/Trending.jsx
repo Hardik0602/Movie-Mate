@@ -3,6 +3,7 @@ import { View, Text, Image, Dimensions, TouchableWithoutFeedback } from "react-n
 import TheBatman from "./../images/TheBatman.jpg";
 import Carousel from "react-native-snap-carousel";
 import { useNavigation } from "@react-navigation/native";
+import { image_500, image_blank } from "../api/Api";
 const { width, height } = Dimensions.get("window");
 export default function Trending({ data }) {
     const navigation = useNavigation()
@@ -27,10 +28,14 @@ export default function Trending({ data }) {
     );
 }
 const MovieCard = ({ item, handleClick }) => {
+    // console.log(item.poster_path)
     return (
         <TouchableWithoutFeedback onPress={() => handleClick(item)}>
             <Image
-                source={TheBatman}
+                // source={TheBatman}
+                source={item.poster_path
+                    ? { uri: image_500(item.poster_path) }
+                    : image_blank}
                 style={{
                     width: width * 0.6,
                     height: height * 0.4

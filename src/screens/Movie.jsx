@@ -1,24 +1,30 @@
 import { View, Text, StatusBar, Image, ScrollView, Dimensions } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TheBatman from "./../images/TheBatman.jpg";
 import { ChevronLeftIcon } from 'react-native-heroicons/outline'
 import { HeartIcon } from 'react-native-heroicons/solid'
 import { TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Cast from '../components/Cast';
 import List from '../components/List';
 import Loading from '../components/Loading';
+import { image_500, image_blank } from '../api/Api';
 const { width, height } = Dimensions.get("window");
-export default function Movie({ item }) {
+export default function Movie() {
+  const { params: { item } } = useRoute()
   const navigation = useNavigation()
   const insets = useSafeAreaInsets()
   const [favorite, setFavorite] = useState(false)
-  let movieName = 'The Batman'
-  const [cast, setCast] = useState([1, 2, 3, 4, 5])
-  const [similar, setSimilar] = useState([1, 2, 3, 4, 5, 6])
+  // let movieName = 'The Batman'
+  let movieName = item.title
+  const [cast, setCast] = useState([])
+  const [similar, setSimilar] = useState([])
   const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    console.log(item.id)
+  }, [item])
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 20 }}
@@ -44,7 +50,10 @@ export default function Movie({ item }) {
             ? <Loading />
             : <View>
               <Image
-                source={TheBatman}
+                // source={TheBatman}
+                source={item.poster_path
+                  ? { uri: image_500(item.poster_path) }
+                  : image_blank}
                 style={{
                   height: height * 0.65,
                   width: width
@@ -90,7 +99,7 @@ export default function Movie({ item }) {
               </Text>
             </View>
             <Cast cast={cast} />
-            <List title={'Similar Movies'} data={similar} />
+            {/* <List title={'Similar Movies'} data={similar} /> */}
           </>
       }
     </ScrollView>
