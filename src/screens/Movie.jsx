@@ -10,21 +10,48 @@ import LinearGradient from 'react-native-linear-gradient';
 import Cast from '../components/Cast';
 import List from '../components/List';
 import Loading from '../components/Loading';
-import { image_500, image_blank } from '../api/Api';
+import { fetchMovieCredits, fetchMovieDetails, fetchSimilarMovie, image_500, image_blank } from '../api/Api';
 const { width, height } = Dimensions.get("window");
 export default function Movie() {
   const { params: { item } } = useRoute()
   const navigation = useNavigation()
   const insets = useSafeAreaInsets()
   const [favorite, setFavorite] = useState(false)
-  // let movieName = 'The Batman'
-  let movieName = item.title
+  let movieName = 'The Batman'
   const [cast, setCast] = useState([])
   const [similar, setSimilar] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [movie, setMovie] = useState([])
   useEffect(() => {
-    console.log(item.id)
+    // console.log(item.id)
+    getMovieDetails(item.id)
+    getMovieCredits(item.id)
+    getSimilarMovies(item.id)
   }, [item])
+  const getMovieDetails = async (id) => {
+    const data = await fetchMovieDetails(id)
+    // console.log(data)
+    if (data) {
+      setMovie(data)
+    }
+    setLoading(false)
+  }
+  const getMovieCredits = async (id) => {
+    const data = await fetchMovieCredits(id)
+    // console.log(data)
+    if (data && data.cast) {
+      setCast(data.cast)
+    }
+    setLoading(false)
+  }
+  const getSimilarMovies = async (id) => {
+    const data = await fetchSimilarMovie(id)
+    // console.log(data)
+    if (data && data.results) {
+      setSimilar(data.results)
+    }
+    setLoading(false)
+  }
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 20 }}
@@ -32,7 +59,7 @@ export default function Movie() {
       <StatusBar translucent backgroundColor={'transparent'} barStyle={'light-content'} />
       <View className='w-full'>
         <View
-          style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+          style={{ paddingTop: insets.top }}
           className='absolute z-10 w-full flex-row items-center justify-between px-4'>
           <TouchableOpacity
             className='rounded-xl p-1 bg-[#eab308]'
@@ -51,8 +78,8 @@ export default function Movie() {
             : <View>
               <Image
                 // source={TheBatman}
-                source={item.poster_path
-                  ? { uri: image_500(item.poster_path) }
+                source={movie?.poster_path
+                  ? { uri: image_500(movie?.poster_path) }
                   : image_blank}
                 style={{
                   height: height * 0.65,
@@ -79,10 +106,12 @@ export default function Movie() {
             <View
               style={{ marginTop: -height * 0.1 }}
               className='space-y-3'>
-              <Text className='text-white text-center text-3xl font-bold'>{movieName}</Text>
-              <Text className='text-neutral-400 font-semibold text-center text-base'>2022 • PG-15 • 2h 56m</Text>
+              {/* <Text className='text-white text-center text-3xl font-bold'>{movieName}</Text> */}
+              <Text className='text-white text-center text-3xl font-bold'>{movie?.title}</Text>
+              {/* <Text className='text-neutral-400 font-semibold text-center text-base'>2022 • PG-15 • 2h 56m</Text> */}
+              <Text className='text-neutral-400 font-semibold text-center text-base'>{movie?.status} • {movie?.release_date?.split('-')[0]} • {movie?.runtime} min</Text>
               <View className='flex-row justify-center mx-4 space-x-2'>
-                <Text className='text-neutral-400 font-semibold text-base text-center'>Action</Text>
+                {/* <Text className='text-neutral-400 font-semibold text-base text-center'>Action</Text>
                 <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
                 <Text className='text-neutral-400 font-semibold text-base text-center'>Crime</Text>
                 <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
@@ -90,16 +119,25 @@ export default function Movie() {
                 <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
                 <Text className='text-neutral-400 font-semibold text-base text-center'>Thriller</Text>
                 <Text className='text-neutral-400 font-semibold text-base text-center'>•</Text>
-                <Text className='text-neutral-400 font-semibold text-base text-center'>Mystery</Text>
+                <Text className='text-neutral-400 font-semibold text-base text-center'>Mystery</Text> */}
+                {
+                  movie?.genres?.map((genre, index) => {
+                    let showDot = index + 1 != movie.genres.length
+                    return (
+                      <Text key={index} className='text-neutral-400 font-semibold text-base text-center'>{genre?.name}  {showDot ? '•' : null}</Text>
+                    )
+                  })
+                }
               </View>
               <Text className='text-neutral-400 mx-4 text-center text-base font-semibold'>
-                When a sadistic serial killer begins murdering key political figures in Gotham,
+                {/* When a sadistic serial killer begins murdering key political figures in Gotham,
                 the Batman is forced to investigate the city's hidden corruption and question his
-                family's involvement.
+                family's involvement. */}
+                {movie?.overview}
               </Text>
             </View>
-            <Cast cast={cast} />
-            {/* <List title={'Similar Movies'} data={similar} /> */}
+            {cast.length > 0 && <Cast cast={cast} />}
+            {similar.length > 0 && <List title={'Similar Movies'} data={similar} />}
           </>
       }
     </ScrollView>
